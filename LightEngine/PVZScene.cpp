@@ -1,85 +1,71 @@
 #include "PVZScene.h"
-
 #include "Plant.h"
 #include "Zombie.h"
 #include "Projectile.h"
-
-#include "Debug.h"
+#include <iostream>
 
 void PVZScene::OnInitialize()
 {
-	pPlant1 = SpawnPlant(120, 120);
-	pPlant2 = SpawnPlant(120, 360);
-	pPlant3 = SpawnPlant(120, 600);
+    // Initialisation des plantes
+    pPlant1 = CreateEntity<Plant>(50, sf::Color::Green);
+    pPlant1->SetPosition(120, 120);
 
-	pPlantSelected = nullptr;
+    pPlant2 = CreateEntity<Plant>(50, sf::Color::Green);
+    pPlant2->SetPosition(120, 360);
+
+    pPlant3 = CreateEntity<Plant>(50, sf::Color::Green);
+    pPlant3->SetPosition(120, 600);
 }
 
 void PVZScene::OnEvent(const sf::Event& event)
 {
-	if (event.type != sf::Event::EventType::MouseButtonPressed)
-		return;
-
-	if (event.mouseButton.button == sf::Mouse::Button::Left)
-	{
-		ShootProjectile(pPlant1);
-		ShootProjectile(pPlant2);
-		ShootProjectile(pPlant3);
-	}
-
-	if (event.mouseButton.button == sf::Mouse::Button::Right)
-	{
-		SpawnZombie(event.mouseButton.x, event.mouseButton.y);
-	}
-	
-}
-
-void PVZScene::TrySetSelectedEntity(Plant* pEntity, int x, int y)
-{
-	if (pEntity->IsInside(x, y) == false)
-		return;
-	pPlantSelected = pEntity;
+    // Gestion des événements (clavier, souris)
 }
 
 void PVZScene::OnUpdate()
 {
-	if (pPlantSelected != nullptr)
-	{
-		sf::Vector2f position = pPlantSelected->GetPosition();
-		Debug::DrawCircle(position.x, position.y, 10, sf::Color::Blue);
-	}
-}
+    float deltaTime = GetDeltaTime();
 
-Plant* PVZScene::SpawnPlant(int x, int y)
-{
-	Plant* pPlant;
-	
-	pPlant = CreateEntity<Plant>(50, sf::Color::Green);
-	pPlant->SetPosition(x, y);
-	pPlant->SetRigidBody(true);
+    // Mise à jour des plantes
+    pPlant1->Update(deltaTime);
+    pPlant2->Update(deltaTime);
+    pPlant3->Update(deltaTime);
 
-	return pPlant;
-}
+    // Suppression des zombies morts
+    zombies.erase(std::remove_if(zombies.begin(), zombies.end(),
+        [](Zombie* z) { return z->IsDead(); }), zombies.end());
 
-void PVZScene::TrySetSelectedPlant(sf::Event event)
-{
-	TrySetSelectedEntity(pPlant1, event.mouseButton.x, event.mouseButton.y);
-	TrySetSelectedEntity(pPlant2, event.mouseButton.x, event.mouseButton.y);
-	TrySetSelectedEntity(pPlant3, event.mouseButton.x, event.mouseButton.y);
-}
+    // Suppression des projectiles détruits
+    projectiles.erase(std::remove_if(projectiles.begin(), projectiles.end(),
+        [](Projectile* p) { return p->IsDestroyed(); }), projectiles.end());
 
-void PVZScene::ShootProjectile(Plant* pPlant)
-{
-	Projectile* pProjectile = CreateEntity<Projectile>(5, sf::Color::Yellow);
-	pProjectile->SetPosition(pPlant->GetPosition().x + 65, pPlant->GetPosition().y);
-	pProjectile->SetRigidBody(true);
-	pProjectile->GoToDirection(1000, pPlant->GetPosition().y, 100.f);
+    // Mise à jour des zombies
+    for (auto* zombie : zombies)
+        zombie->Update(deltaTime);
+
+    // Mise à jour des projectiles
+    for (auto* projectile : projectiles)
+        projectile->Update(deltaTime);
+
+    // Spawn de zombies aléatoires
+    if (rand() % 200 == 0)
+    {
+        int lane = rand() % 3;
+        int y = (lane == 0) ? 120 : (lane == 1) ? 360 : 600;
+        SpawnZombie(1000, y);
+    }
 }
 
 void PVZScene::SpawnZombie(int x, int y)
 {
-	Zombie* pZombie = CreateEntity<Zombie>(50, sf::Color::Red);
-	pZombie->SetPosition(x, y);
-	pZombie->SetRigidBody(true);
-	pZombie->GoToDirection(0, y, 50.f);
+    Zombie* pZombie = CreateEntity<Zombie>(50, sf::Color::Red);
+    pZombie->SetPosition(x, y);
+    zombies.push_back(pZombie);
+}
+
+void PVZScene::SpawnProjectile(int x, int y)
+{
+    Projectile* pProjectile = CreateEntity<Projectile>(20, sf::Color::Yellow);
+    pProjectile->SetPosition(x, y);
+    projectiles.push_back(pProjectile);
 }

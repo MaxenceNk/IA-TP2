@@ -25,6 +25,7 @@
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Plant.cpp" />
+    <ClCompile Include="PlantStateMachine.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="PVZScene.cpp" />
     <ClCompile Include="SampleScene.cpp" />
@@ -38,6 +39,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="Plant.h" />
+    <ClInclude Include="PlantStateMachine.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="PVZScene.h" />
     <ClInclude Include="SampleScene.h" />

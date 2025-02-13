@@ -35,6 +35,7 @@
     <ClCompile Include="Plant.cpp" />
     <ClCompile Include="Zombie.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="PlantStateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -62,6 +63,7 @@
     <ClInclude Include="Plant.h" />
     <ClInclude Include="Zombie.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="PlantStateMachine.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Scene.inl">
