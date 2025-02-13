@@ -28,6 +28,6 @@ public:
 
 
 
-	void SpawnZombie(int x, int y);
+	void SpawnZombie(int pMousePosition);
 };
 

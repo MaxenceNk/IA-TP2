@@ -29,7 +29,7 @@ void PVZScene::OnEvent(const sf::Event& event)
 
 	if (event.mouseButton.button == sf::Mouse::Button::Right)
 	{
-		SpawnZombie(event.mouseButton.x, event.mouseButton.y);
+		SpawnZombie(event.mouseButton.y);
 	}
 	
 }
@@ -76,10 +76,22 @@ void PVZScene::ShootProjectile(Plant* pPlant)
 	pProjectile->GoToDirection(1000, pPlant->GetPosition().y, 100.f);
 }
 
-void PVZScene::SpawnZombie(int x, int y)
+void PVZScene::SpawnZombie(int pMousePosition)
 {
+	int zombieSpot = 0;
 	Zombie* pZombie = CreateEntity<Zombie>(50, sf::Color::Red);
-	pZombie->SetPosition(x, y);
+
+	if (pMousePosition < 240.f) {
+		zombieSpot = 120;
+	}
+	else if (240.f <= pMousePosition && pMousePosition < 480.f) {
+		zombieSpot = 360;
+	}
+	else {
+		zombieSpot = 600;
+	}
+
+	pZombie->SetPosition(1280, zombieSpot);
 	pZombie->SetRigidBody(true);
-	pZombie->GoToDirection(0, y, 50.f);
+	pZombie->GoToDirection(0, zombieSpot, 50.f);
 }
