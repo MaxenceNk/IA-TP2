@@ -27,9 +27,10 @@ void PVZScene::OnUpdate()
     float deltaTime = GetDeltaTime();
 
     // Mise à jour des plantes
-    pPlant1->Update(deltaTime);
-    pPlant2->Update(deltaTime);
-    pPlant3->Update(deltaTime);
+    pPlant1->Update();
+    pPlant2->Update();
+    pPlant3->Update();
+
 
     // Suppression des zombies morts
     zombies.erase(std::remove_if(zombies.begin(), zombies.end(),
